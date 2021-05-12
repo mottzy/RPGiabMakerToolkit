@@ -1,0 +1,20 @@
+
+
+
+$done = false;
+
+while $done != true do
+	$tiles = group["preload"];
+	
+	if $tiles != null then
+		for $preloadTile in $tiles do
+			$currentTile = $preloadTile;
+			execute_script("rmtPathConnector", true);
+			remove_from_group($currentTile, "preload");
+		end;
+	else
+		$done = true;
+	end;
+end;
+
+

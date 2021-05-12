@@ -1,0 +1,13 @@
+$currentTile =  self;
+
+if self.property["triggerAnimation"] != null then
+	print("playing anmation" + self.property["triggerAnimation"]);
+	play_animation(self, self.property["triggerAnimation"]);
+end;
+
+execute_script("rmtPathConnector", true);
+
+if self.property["OnEnterTile"] != null then
+	execute_script(self.property["OnEnterTile"], true);
+
+end;

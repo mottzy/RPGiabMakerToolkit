@@ -1,0 +1,6 @@
+$currentTile =  self;
+print("exiting tile");
+if self.property["OnExitTile"] != null then
+	execute_script(self.property["OnExitTile"], true);
+
+end;

@@ -1,0 +1,22 @@
+$target = self.property["target"];
+
+if $target != null and entity[$target] != null and entity[$target].property["OnTrigger"] != null then
+	$object = entity[$target];
+	execute_script($object.property["OnTrigger"], true);
+	
+	
+		if $currentTile.property["timer"] != null then
+			$timer = $currentTile.property["timer"];
+			while $timer > 0 do
+				$timer -= 1;	
+				wait(1);	
+			end;
+			
+			play_animation($currentTile, "unpressed");	
+			$status = "unpressed";
+			execute_script($object.property["OnTrigger"], true);
+		end;
+end;
+
+
+

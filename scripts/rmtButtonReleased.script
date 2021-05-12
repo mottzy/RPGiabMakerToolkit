@@ -1,0 +1,3 @@
+if $currentTile != null then
+	play_animation($currentTile, "unpressed");
+end;

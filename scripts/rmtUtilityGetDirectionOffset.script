@@ -1,0 +1,22 @@
+// This doesn't work yet due to a bug in the coding that doesn't recognize coords vars
+$offset = coord[0, 0, 0];
+if $direction != null then
+	
+	if $direction == NORTH then
+		$offset = coord[0, -1, 0];
+	end;
+	
+	if $direction == SOUTH then
+		$offset = coord[0, 1, 0];
+	end;
+	
+	if $direction == EAST then
+		$offset = coord[1, 0, 0];
+	end;
+	
+	if $direction == WEST then
+		$offset = coord[-1, 0, 0];
+	end;
+
+end;
+

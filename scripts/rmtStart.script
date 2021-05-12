@@ -1,0 +1,5 @@
+if global.property["start"] != null then
+	load_map(global.property["start"], coord[0, 0, 0]);
+else
+	display_message("To use this script, you must specify a starting map in global properies using the 'start' property");
+end;

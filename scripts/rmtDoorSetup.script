@@ -1,0 +1,35 @@
+if $door != null then
+
+	$baseTile = tile[$door.coord.x, $door.coord.y, $door.coord.z - 1];
+	
+	$object = $door;
+	
+	// This script sets an $offsetTile variable that is a tile
+	execute_script("rmtUtilityGetDirectionOffsetTile", true);
+	
+	$frontTile = tile[$door.property["xModifier"], $door.property["yModifier"], $door.property["zModifier"]];
+
+	//Uses $getOpposite to get the back tile
+	$getOpposite = true;
+	execute_script("rmtUtilityGetDirectionOffsetTile", true);
+	$backTile = tile[$door.property["xModifier"], $door.property["yModifier"], $door.property["zModifier"]];
+
+	//Provides a $uniqueId variable
+	execute_script("rmtUtilityGetUniqueId", true);
+	$uniqueId = global.property["rmtUniqueId"];
+
+	$door.id = "door" + $uniqueId;
+	$frontTile.id = "doorTrigger" + $uniqueId;
+	$baseTile.id = "doorBase" + $uniqueId;
+	$backTile.id = "doorBack" + $uniqueId;
+	$frontTile.property["uniqueId"] = $uniqueId;
+	set_entity_script($frontTile, "rmtDoorTrigger", ENTER_TILE);
+	set_entity_script($backTile, "rmtPathTrigger", ENTER_TILE);
+	$frontTile.property["passable"] = false;
+	$baseTile.property["passable"] = false;
+	$backTile.property["passable"] = false;
+	
+	if "south" == SOUTH then
+		print("it went south");
+	end;
+end;

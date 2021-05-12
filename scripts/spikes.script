@@ -1,0 +1,29 @@
+
+if self.property["isOpen"] != true then
+	wait(0.3);
+	play_animation(self, "open");
+	self.property["isOpen"] = true;
+	if self.characters != null then
+		$takeDamage = true;
+	end;
+
+	wait(0.3);
+	play_animation(self, "close");
+	self.property["isOpen"] = false;
+else
+	$takeDamage = true;
+end;
+
+if $takeDamage == true then
+
+		$health = global.property["health"];
+		$health -= 1;
+		
+		if entity["health"] != null then
+			play_animation(entity["health"], str($health) );
+		end;
+		
+		 global.property["health"] = $health;
+
+
+end;

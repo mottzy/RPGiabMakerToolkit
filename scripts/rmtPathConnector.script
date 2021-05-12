@@ -1,0 +1,94 @@
+if $currentTile != null then
+	if entity["config"] != null then
+		$config = entity["config"];
+	end;
+	
+	$zOffsetDefault = $config.property["zOffset"];
+	if $zOffsetDefault == null then
+		$zOffsetDefault = 6;
+	end;
+	
+	$tileZOffset = 0;
+	
+	if $currentTile.property["zOffset"] != null then
+		$tileZOffset = $currentTile.property["zOffset"];
+	end;
+	
+	
+	$north = tile[$currentTile.coord.x, $currentTile.coord.y - 1, $currentTile.coord.z + $tileZOffset];
+	$south = tile[$currentTile.coord.x, $currentTile.coord.y + 1, $currentTile.coord.z + $tileZOffset];
+	$east = tile[$currentTile.coord.x + 1, $currentTile.coord.y , $currentTile.coord.z + $tileZOffset];
+	$west = tile[$currentTile.coord.x - 1, $currentTile.coord.y , $currentTile.coord.z + $tileZOffset];
+	$surroundingTiles = array[$north, $east, $south, $west];
+
+	$currentTags = $currentTile.tags;
+	if $currentTags contains "stair" then
+		$object = $currentTile;
+		$zOffset = $zOffsetDefault * -1;
+		
+		execute_script("rmtUtilityGetDirectionOffsetTile", true);
+				
+		$nextTile = tile[$currentTile.property["xModifier"], $currentTile.property["yModifier"], $currentTile.property["zModifier"]];
+		print($nextTile);
+		if $nextTile != null then
+			$surroundingTiles.push_back($nextTile);
+		end;
+	end;
+
+	$directionOpposites = array[SOUTH, WEST, NORTH, EAST];
+
+	$loopIndex = 0;
+	for $targetTile in $surroundingTiles do
+		$topTile = tile[$targetTile.coord.x, $targetTile.coord.y, $targetTile.coord.z + $zOffsetDefault];
+		$targetTags = $targetTile.tags;
+		$passable = true;
+		if $targetTags contains "impassable" then
+			$passable = false;
+		end;	
+		
+		if $targetTile != null and $targetTile.property["passable"] != false and $topTile == null and $passable == true then
+			modify_navigation($currentTile, $targetTile, WALK_AND_INTERACT);
+			set_entity_script($targetTile, "rmtPathTrigger", ENTER_TILE);
+			//set_entity_script($targetTile, "rmtExitTileTrigger", EXIT_TILE);
+		 	
+		else
+			if  $topTile != null then
+				$tags = $topTile.tags;
+				
+				if $tags contains "stair" then
+					//Basically we need to confirm that the stairs direction is the matched opposite of the current direction of the tile 
+					//relative to the currentTile
+					$oppositeDirection = $directionOpposites[$loopIndex];
+					
+					if $topTile.direction == $oppositeDirection then
+						modify_navigation($currentTile, $topTile, WALK_AND_INTERACT);
+						set_entity_script($topTile, "rmtPathTrigger", ENTER_TILE);
+						//set_entity_script($topTile, "rmtExitTileTrigger", EXIT_TILE);
+					end;
+				else
+					if $tags contains "door" then
+						if $topTile.property["isOpen"] == true then	
+							modify_navigation($currentTile, $targetTile, WALK_AND_INTERACT);
+							set_entity_script($targetTile, "rmtPathTrigger", ENTER_TILE);
+							//set_entity_script($targetTile, "rmtExitTileTrigger", EXIT_TILE);
+						else
+							modify_navigation($currentTile, $targetTile, INTERACT_ONLY);
+						end;
+					end;
+					
+					if $tags contains "passable" and $passable == true then
+						modify_navigation($currentTile, $topTile, WALK_AND_INTERACT);
+						set_entity_script($topTile, "rmtPathTrigger", ENTER_TILE);
+						//set_entity_script($topTile, "rmtExitTileTrigger", EXIT_TILE);
+							
+					end;
+					
+					
+				end;
+			end;
+		end;
+		$loopIndex += 1;
+	end;
+	set_entity_script($currentTile, null);
+end;
+

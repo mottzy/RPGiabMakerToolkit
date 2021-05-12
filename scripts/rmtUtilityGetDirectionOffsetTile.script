@@ -1,0 +1,41 @@
+
+if $object != null then
+	
+	if $zOffset == null then
+		$zOffset = -1;
+	end;
+	$xModifier = 0;
+	$yModifier = 0;
+	$zModifier = $zOffset;
+
+	if $direction == null then
+		$direction = $object.direction;
+	end;
+	
+	$modifier = 1;
+	if $getOpposite then
+		$modifier = -1;
+	end;
+	
+	if $direction == NORTH then
+		$yModifier = (-1 * $modifier);
+	end;
+	
+	if $direction == SOUTH then
+		$yModifier = (1 * $modifier);
+	end;
+	
+	if $direction == EAST then
+		$xModifier = (1 * $modifier);
+	end;
+	
+	if $direction == WEST then
+		$xModifier = (-1 * $modifier);
+	end;
+
+	$object.property["xModifier"] = $object.coord.x + $xModifier;
+	$object.property["yModifier"] = $object.coord.y + $yModifier;
+	$object.property["zModifier"] = $object.coord.z + $zModifier;
+
+end;
+

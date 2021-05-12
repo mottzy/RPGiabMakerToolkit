@@ -1,0 +1,34 @@
+if entity["start"] != null then
+	put_player("start", SOUTH);
+end;
+
+
+
+$currentTile = tile[player.coord.x, player.coord.y, player.coord.z];
+execute_script("rmtPathConnector", true);
+
+for $impassable in group["impassable"] do
+	$impassable.property["passable"] = false;
+end;
+
+for $door in group["door"] do
+	execute_script("rmtDoorSetup", true);
+end;
+
+for $npc in group["npc"] do
+	print($npc);
+	$currentTile = tile[$npc.coord.x, $npc.coord.y, $npc.coord.z];
+	print($currentTile);
+	execute_script("rmtPathConnector", true);
+end;
+
+for $attachTile in group["attach"] do
+	$object = $attachTile.property["object"];
+	$attachPoint = $attachTile.property["attach"];
+	
+	if $object != null and $attachPoint != null then;
+ 		attach_object($object, $attachTile, $attachPoint);
+	end;
+	
+
+end;

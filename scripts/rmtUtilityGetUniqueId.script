@@ -1,0 +1,5 @@
+
+if global.property["rmtUniqueId"] == null then
+	global.property["rmtUniqueId"] = 0;
+end;
+global.property["rmtUniqueId"] += 1;
