@@ -3,32 +3,52 @@
 if $moveableBlock != null then
 
 	$tileZOffset = 0;
+	if $zOffsetDefault != null then
+		$tileZOffset += $zOffsetDefault;
+	end;
+
 	
-	$north = tile[$moveableBlock.coord.x, $moveableBlock.coord.y - 1, $moveableBlock.coord.z + $tileZOffset];
-	$south = tile[$moveableBlock.coord.x, $moveableBlock.coord.y + 1, $moveableBlock.coord.z + $tileZOffset];
-	$east = tile[$moveableBlock.coord.x + 1, $moveableBlock.coord.y , $moveableBlock.coord.z + $tileZOffset];
-	$west = tile[$moveableBlock.coord.x - 1, $moveableBlock.coord.y , $moveableBlock.coord.z + $tileZOffset];
+	$north = tile[$moveableBlock.coord.x, $moveableBlock.coord.y - 1, $moveableBlock.coord.z];
+	$south = tile[$moveableBlock.coord.x, $moveableBlock.coord.y + 1, $moveableBlock.coord.z];
+	$east = tile[$moveableBlock.coord.x + 1, $moveableBlock.coord.y , $moveableBlock.coord.z];
+	$west = tile[$moveableBlock.coord.x - 1, $moveableBlock.coord.y , $moveableBlock.coord.z];
 	
-	$northCoord = coord[$moveableBlock.coord.x, $moveableBlock.coord.y - 1, $moveableBlock.coord.z + $tileZOffset];
-	$southCoord = coord[$moveableBlock.coord.x, $moveableBlock.coord.y + 1, $moveableBlock.coord.z + $tileZOffset];
-	$eastCoord = coord[$moveableBlock.coord.x + 1, $moveableBlock.coord.y , $moveableBlock.coord.z + $tileZOffset];
-	$westCoord = coord[$moveableBlock.coord.x - 1, $moveableBlock.coord.y , $moveableBlock.coord.z + $tileZOffset];
+	$northBottom = tile[$moveableBlock.coord.x, $moveableBlock.coord.y - 1, $moveableBlock.coord.z - $tileZOffset];
+	$southBottom = tile[$moveableBlock.coord.x, $moveableBlock.coord.y + 1, $moveableBlock.coord.z - $tileZOffset];
+	$eastBottom = tile[$moveableBlock.coord.x + 1, $moveableBlock.coord.y , $moveableBlock.coord.z - $tileZOffset];
+	$westBottom = tile[$moveableBlock.coord.x - 1, $moveableBlock.coord.y , $moveableBlock.coord.z - $tileZOffset];
+	
+	$northCoord = coord[$moveableBlock.coord.x, $moveableBlock.coord.y - 1, $moveableBlock.coord.z];
+	$southCoord = coord[$moveableBlock.coord.x, $moveableBlock.coord.y + 1, $moveableBlock.coord.z];
+	$eastCoord = coord[$moveableBlock.coord.x + 1, $moveableBlock.coord.y , $moveableBlock.coord.z];
+	$westCoord = coord[$moveableBlock.coord.x - 1, $moveableBlock.coord.y , $moveableBlock.coord.z];
 	
 	
 	$surroundingTiles = array[$north, $east, $south, $west];
+	$surroundingBottomTilesReversed = array[$southBottom, $westBottom, $northBottom, $eastBottom];
 	$surroundingCoords = array[$northCoord, $eastCoord, $southCoord, $westCoord];
 	$directions = array[NORTH, EAST, SOUTH, WEST];
 
- 	create_platform($moveableBlock, 30);
+ 	create_platform($moveableBlock, 40);
 
 	$loopIndex = 0;
+	$bottomTile = tile[$moveableBlock.coord.x, $moveableBlock.coord.y, $moveableBlock.coord.z - $tileZOffset];
+	
 	for $targetTile in $surroundingTiles do
-		
+		$reverseTile = $surroundingBottomTilesReversed[$loopIndex];
 		if $targetTile == null then
 			$direction = $directions[$loopIndex];
 			add_waypoint($moveableBlock, $direction, $surroundingCoords[$loopIndex]);
-			//$targetTile.property[$loopIndex] = true;
+			$moveableBlock.property[$direction] = true;
+		else
+			$moveableBlock.property[$direction] = false;
+			modify_navigation($bottomTile, $reverseTile, INTERACT_ONLY);
 		end;
+		
+		if $reverseTile != null then
+			set_entity_script($reverseTile, "rmtPathTrigger", ENTER_TILE);
+		end;
+		
 		$loopIndex += 1;
 	end;
 end;

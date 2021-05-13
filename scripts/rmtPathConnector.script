@@ -47,7 +47,7 @@ if $currentTile != null then
 	end;
 
 	$directionOpposites = array[SOUTH, WEST, NORTH, EAST];
-
+	$directions = array[NORTH, EAST, SOUTH, WEST];
 	$loopIndex = 0;
 	for $targetTile in $surroundingTiles do
 		$topTile = tile[$targetTile.coord.x, $targetTile.coord.y, $targetTile.coord.z + $zOffsetDefault];
@@ -78,10 +78,13 @@ if $currentTile != null then
 					end;
 				else
 					if $tags contains "door" then
+						print("disdoor");
+						print($topTile.property["isLocked"]  + " and " + $topTile.property["isOpen"]); 
 						if $topTile.property["isOpen"] == true or $topTile.property["isLocked"] == false then
 							play_animation($topTile, "open");	
 							modify_navigation($currentTile, $targetTile, WALK_AND_INTERACT);
 							set_entity_script($targetTile, "rmtPathTrigger", ENTER_TILE);
+							print("whyyyyyyy?");
 							//set_entity_script($targetTile, "rmtExitTileTrigger", EXIT_TILE);
 						else
 							modify_navigation($currentTile, $targetTile, INTERACT_ONLY);
@@ -94,17 +97,22 @@ if $currentTile != null then
 						//set_entity_script($topTile, "rmtExitTileTrigger", EXIT_TILE);
 							
 					end;
-					
+				
 					if $tags contains "moveable" then
-						modify_navigation($currentTile, $targetTile, WALK_AND_INTERACT);
-						set_entity_script($targetTile, "rmtPathTrigger", ENTER_TILE);
-						$targetTile.property["hasMoveableBlock"] = true;
+						$currentDirection = $directions[$loopIndex];
+						if $topTile.property[$currentDirection] == true then
+							modify_navigation($currentTile, $targetTile, WALK_AND_INTERACT);
+							set_entity_script($targetTile, "rmtPathTrigger", ENTER_TILE);
+							$targetTile.property["hasMoveableBlock"] = true;
+						
+						end;
+				
 					end;
 				end;
 			end;
 		end;
 		$loopIndex += 1;
 	end;
-	set_entity_script($currentTile, null);
+	//set_entity_script($currentTile, null);
 end;
 

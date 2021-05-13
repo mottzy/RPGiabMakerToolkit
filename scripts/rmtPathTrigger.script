@@ -1,5 +1,4 @@
 $currentTile =  self;
-	
 if self.property["triggerAnimation"] != null then
 	play_animation(self, self.property["triggerAnimation"]);
 end;
@@ -7,7 +6,7 @@ end;
 if self.property["hasPaths"] != true then
 	execute_script("rmtPathConnector", true);
 	// Cut down on repeated calls to the script after a path has already been established
-	self.property["hasPaths"] = true;
+	//self.property["hasPaths"] = true;
 end;
 
 if self.property["hasMoveableBlock"] == true then;
@@ -24,25 +23,27 @@ if self.property["hasMoveableBlock"] == true then;
 		end;
 	end;
 	$moveableBlock = tile[self.coord.x, self.coord.y, self.coord.z + $zOffsetDefault];
-	if $moveableBlock != null then
-		$direction = player.direction;
+	$direction = str(player.direction);
+	if $moveableBlock != null and $moveableBlock.property[$direction] == true then
+		
+  		set_movement_speed(player, 15);
 		move_platform($moveableBlock, $direction, true);
 		
 		$coords = $moveableBlock.coord;
   		remove_entity($moveableBlock);
 		add_tile("moveableBlock8", $coords);
+		
 		$moveableBlock = tile[$coords.x, $coords.y, $coords.z];
+		$lastTile = self;
 		execute_script("rmtMoveableBlockSetup", true);
 		$bottomBlock = tile[$coords.x, $coords.y, $coords.z - $zOffsetDefault];
 		$bottomBlock.property["hasMoveableBlock"] = true;
+		
+		// After moving the block, turn this property off to save on scripting cycles later
+		self.property["hasMoveableBlock"] = false;
+		set_movement_speed(player, 30);
 	end;
-	//create_platform($moveableBlock, 30);
-	//$object = self;
-	//$direction = player.direction;
-	//execute_script("rmtUtilityGetDirectionOffsetTile", true);
-	//add_waypoint($moveableBlock, NORTH, coord[self.property["xModifier"], self.property["yModifier"], $moveableBlock.coord.z]);
- 	
-
+	
 end;
 
 if self.property["OnEnterTile"] != null then

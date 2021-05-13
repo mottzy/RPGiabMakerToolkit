@@ -3,6 +3,7 @@
 if $object != null and $object.property["isOpen"] != true  and $status != "unpressed" then
   play_animation($object, "open");
   $object.property["isOpen"] = true;
+  $object.property["isLocked"] = false;
 else
 
 	if $status == "unpressed" then
