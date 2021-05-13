@@ -94,3 +94,9 @@ Any tile model can have a "passable" tag added to it. If this tag exists, a navi
 *Model Tag*: impassable
 
 A tag used to prevent the player from walking on a tile. Good for things like water / lava / gaps / etc.
+
+## Event Triggers
+
+Because the auto-pathing uses a special script to trigger navigation, additional triggers tied to "EnterTile" need to be handled a little differently. To make an "EnterTile" script execute, you must add a custom property sting "OnEnterTile" and set the value to the string name of the script to trigger. 
+
+You can see an example of this with the prototype button.
