@@ -1,0 +1,35 @@
+
+
+if $moveableBlock != null then
+
+	$tileZOffset = 0;
+	
+	$north = tile[$moveableBlock.coord.x, $moveableBlock.coord.y - 1, $moveableBlock.coord.z + $tileZOffset];
+	$south = tile[$moveableBlock.coord.x, $moveableBlock.coord.y + 1, $moveableBlock.coord.z + $tileZOffset];
+	$east = tile[$moveableBlock.coord.x + 1, $moveableBlock.coord.y , $moveableBlock.coord.z + $tileZOffset];
+	$west = tile[$moveableBlock.coord.x - 1, $moveableBlock.coord.y , $moveableBlock.coord.z + $tileZOffset];
+	
+	$northCoord = coord[$moveableBlock.coord.x, $moveableBlock.coord.y - 1, $moveableBlock.coord.z + $tileZOffset];
+	$southCoord = coord[$moveableBlock.coord.x, $moveableBlock.coord.y + 1, $moveableBlock.coord.z + $tileZOffset];
+	$eastCoord = coord[$moveableBlock.coord.x + 1, $moveableBlock.coord.y , $moveableBlock.coord.z + $tileZOffset];
+	$westCoord = coord[$moveableBlock.coord.x - 1, $moveableBlock.coord.y , $moveableBlock.coord.z + $tileZOffset];
+	
+	
+	$surroundingTiles = array[$north, $east, $south, $west];
+	$surroundingCoords = array[$northCoord, $eastCoord, $southCoord, $westCoord];
+	$directions = array[NORTH, EAST, SOUTH, WEST];
+
+ 	create_platform($moveableBlock, 30);
+
+	$loopIndex = 0;
+	for $targetTile in $surroundingTiles do
+		
+		if $targetTile == null then
+			$direction = $directions[$loopIndex];
+			add_waypoint($moveableBlock, $direction, $surroundingCoords[$loopIndex]);
+			//$targetTile.property[$loopIndex] = true;
+		end;
+		$loopIndex += 1;
+	end;
+end;
+

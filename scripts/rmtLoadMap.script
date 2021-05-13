@@ -32,3 +32,7 @@ for $attachTile in group["attach"] do
 	
 
 end;
+
+for $moveableBlock in group["moveable"] do
+	execute_script("rmtMoveableBlockSetup", true);
+end;

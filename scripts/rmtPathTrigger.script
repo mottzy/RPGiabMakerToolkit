@@ -1,11 +1,49 @@
 $currentTile =  self;
-
+	
 if self.property["triggerAnimation"] != null then
-	print("playing anmation" + self.property["triggerAnimation"]);
 	play_animation(self, self.property["triggerAnimation"]);
 end;
 
-execute_script("rmtPathConnector", true);
+if self.property["hasPaths"] != true then
+	execute_script("rmtPathConnector", true);
+	// Cut down on repeated calls to the script after a path has already been established
+	self.property["hasPaths"] = true;
+end;
+
+if self.property["hasMoveableBlock"] == true then;
+	if entity["config"] != null then
+		$config = entity["config"];
+	end;
+	
+	$zOffsetDefault = $config.property["zOffset"];
+	if $zOffsetDefault == null then
+		if global.property["defaultZOffset"] != null then
+			$zOffsetDefault = global.property["defaultZOffset"];
+		else
+			$zOffsetDefault = 6;
+		end;
+	end;
+	$moveableBlock = tile[self.coord.x, self.coord.y, self.coord.z + $zOffsetDefault];
+	if $moveableBlock != null then
+		$direction = player.direction;
+		move_platform($moveableBlock, $direction, true);
+		
+		$coords = $moveableBlock.coord;
+  		remove_entity($moveableBlock);
+		add_tile("moveableBlock8", $coords);
+		$moveableBlock = tile[$coords.x, $coords.y, $coords.z];
+		execute_script("rmtMoveableBlockSetup", true);
+		$bottomBlock = tile[$coords.x, $coords.y, $coords.z - $zOffsetDefault];
+		$bottomBlock.property["hasMoveableBlock"] = true;
+	end;
+	//create_platform($moveableBlock, 30);
+	//$object = self;
+	//$direction = player.direction;
+	//execute_script("rmtUtilityGetDirectionOffsetTile", true);
+	//add_waypoint($moveableBlock, NORTH, coord[self.property["xModifier"], self.property["yModifier"], $moveableBlock.coord.z]);
+ 	
+
+end;
 
 if self.property["OnEnterTile"] != null then
 	execute_script(self.property["OnEnterTile"], true);

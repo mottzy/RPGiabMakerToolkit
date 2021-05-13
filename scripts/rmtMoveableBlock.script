@@ -1,0 +1,2 @@
+$direction = inverse(player.direction);
+print(self);

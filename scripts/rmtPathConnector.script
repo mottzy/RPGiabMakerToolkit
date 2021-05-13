@@ -1,17 +1,28 @@
 if $currentTile != null then
+	$currentTags = $currentTile.tags;
 	if entity["config"] != null then
 		$config = entity["config"];
 	end;
 	
 	$zOffsetDefault = $config.property["zOffset"];
 	if $zOffsetDefault == null then
-		$zOffsetDefault = 6;
+		if global.property["defaultZOffset"] != null then
+			$zOffsetDefault = global.property["defaultZOffset"];
+		else
+			$zOffsetDefault = 6;
+		end;
 	end;
 	
 	$tileZOffset = 0;
 	
 	if $currentTile.property["zOffset"] != null then
 		$tileZOffset = $currentTile.property["zOffset"];
+	else
+		// A "bump" is a tile that is just sitting on top of other tiles (like a button) and so we want to 
+		// start checking for paths one z incement below the current.
+		if $currentTags contains "bump" then
+			$tileZOffset -= $zOffsetDefault;
+		end;
 	end;
 	
 	
@@ -21,7 +32,7 @@ if $currentTile != null then
 	$west = tile[$currentTile.coord.x - 1, $currentTile.coord.y , $currentTile.coord.z + $tileZOffset];
 	$surroundingTiles = array[$north, $east, $south, $west];
 
-	$currentTags = $currentTile.tags;
+
 	if $currentTags contains "stair" then
 		$object = $currentTile;
 		$zOffset = $zOffsetDefault * -1;
@@ -67,7 +78,8 @@ if $currentTile != null then
 					end;
 				else
 					if $tags contains "door" then
-						if $topTile.property["isOpen"] == true then	
+						if $topTile.property["isOpen"] == true or $topTile.property["isLocked"] == false then
+							play_animation($topTile, "open");	
 							modify_navigation($currentTile, $targetTile, WALK_AND_INTERACT);
 							set_entity_script($targetTile, "rmtPathTrigger", ENTER_TILE);
 							//set_entity_script($targetTile, "rmtExitTileTrigger", EXIT_TILE);
@@ -83,7 +95,11 @@ if $currentTile != null then
 							
 					end;
 					
-					
+					if $tags contains "moveable" then
+						modify_navigation($currentTile, $targetTile, WALK_AND_INTERACT);
+						set_entity_script($targetTile, "rmtPathTrigger", ENTER_TILE);
+						$targetTile.property["hasMoveableBlock"] = true;
+					end;
 				end;
 			end;
 		end;

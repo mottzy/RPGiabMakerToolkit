@@ -1,5 +1,5 @@
 $target = self.property["target"];
-
+play_animation($currentTile, "pressed");	
 if $target != null and entity[$target] != null and entity[$target].property["OnTrigger"] != null then
 	$object = entity[$target];
 	execute_script($object.property["OnTrigger"], true);
