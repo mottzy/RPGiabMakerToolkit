@@ -2,8 +2,6 @@ if entity["start"] != null then
 	put_player("start", SOUTH);
 end;
 
-
-
 $currentTile = tile[player.coord.x, player.coord.y, player.coord.z];
 execute_script("rmtPathConnector", true);
 
@@ -34,5 +32,9 @@ for $attachTile in group["attach"] do
 end;
 
 for $moveableBlock in group["moveable"] do
+
+	if global.property["defaultZOffset"] != null then
+		$zOffsetDefault = global.property["defaultZOffset"];
+	end;
 	execute_script("rmtMoveableBlockSetup", true);
 end;

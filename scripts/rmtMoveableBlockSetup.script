@@ -26,6 +26,7 @@ if $moveableBlock != null then
 	
 	$surroundingTiles = array[$north, $east, $south, $west];
 	$surroundingBottomTilesReversed = array[$southBottom, $westBottom, $northBottom, $eastBottom];
+	$surroundingBottomTiles = array[$northBottom, $eastBottom, $southBottom, $westBottom];
 	$surroundingCoords = array[$northCoord, $eastCoord, $southCoord, $westCoord];
 	$directions = array[NORTH, EAST, SOUTH, WEST];
 
@@ -36,8 +37,10 @@ if $moveableBlock != null then
 	
 	for $targetTile in $surroundingTiles do
 		$reverseTile = $surroundingBottomTilesReversed[$loopIndex];
-		if $targetTile == null then
-			$direction = $directions[$loopIndex];
+		$targetBottomTile = $surroundingBottomTiles[$loopIndex];
+		$direction = $directions[$loopIndex];
+		if $targetTile == null and $targetBottomTile != null then
+		
 			add_waypoint($moveableBlock, $direction, $surroundingCoords[$loopIndex]);
 			$moveableBlock.property[$direction] = true;
 		else
@@ -46,7 +49,8 @@ if $moveableBlock != null then
 		end;
 		
 		if $reverseTile != null then
-			set_entity_script($reverseTile, "rmtPathTrigger", ENTER_TILE);
+			// Originally added this to re-apply the script, but stopped removing the script (for now) 
+			//set_entity_script($reverseTile, "rmtPathTrigger", ENTER_TILE);
 		end;
 		
 		$loopIndex += 1;

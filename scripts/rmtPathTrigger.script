@@ -14,7 +14,7 @@ if self.property["hasMoveableBlock"] == true then;
 		$config = entity["config"];
 	end;
 	
-	$zOffsetDefault = $config.property["zOffset"];
+	//$zOffsetDefault = $config.property["zOffset"];
 	if $zOffsetDefault == null then
 		if global.property["defaultZOffset"] != null then
 			$zOffsetDefault = global.property["defaultZOffset"];
