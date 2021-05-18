@@ -56,60 +56,61 @@ if $currentTile != null then
 		if $targetTags contains "impassable" then
 			$passable = false;
 		end;	
-		
-		if $targetTile != null and $targetTile.property["passable"] != false and $topTile == null and $passable == true then
+		if $topTile == null then
+			
+			if $targetTile != null and $targetTile.property["passable"] != false and $topTile == null and $passable == true then
 			modify_navigation($currentTile, $targetTile, WALK_AND_INTERACT);
 			set_entity_script($targetTile, "rmtPathTrigger", ENTER_TILE);
 			//set_entity_script($targetTile, "rmtExitTileTrigger", EXIT_TILE);
-		 	
+			end 	
 		else
-			if  $topTile != null then
-				$tags = $topTile.tags;
+		
+			$tags = $topTile.tags;
+			
+			if $tags contains "stair" then
+				//Basically we need to confirm that the stairs direction is the matched opposite of the current direction of the tile 
+				//relative to the currentTile
+				$oppositeDirection = $directionOpposites[$loopIndex];
 				
-				if $tags contains "stair" then
-					//Basically we need to confirm that the stairs direction is the matched opposite of the current direction of the tile 
-					//relative to the currentTile
-					$oppositeDirection = $directionOpposites[$loopIndex];
-					
-					if $topTile.direction == $oppositeDirection then
-						modify_navigation($currentTile, $topTile, WALK_AND_INTERACT);
-						set_entity_script($topTile, "rmtPathTrigger", ENTER_TILE);
-						//set_entity_script($topTile, "rmtExitTileTrigger", EXIT_TILE);
-					end;
-				else
-					if $tags contains "door" then
-						print("disdoor");
-						print($topTile.property["isLocked"]  + " and " + $topTile.property["isOpen"]); 
-						if $topTile.property["isOpen"] == true or $topTile.property["isLocked"] == false then
-							play_animation($topTile, "open");	
-							modify_navigation($currentTile, $targetTile, WALK_AND_INTERACT);
-							set_entity_script($targetTile, "rmtPathTrigger", ENTER_TILE);
-							print("whyyyyyyy?");
-							//set_entity_script($targetTile, "rmtExitTileTrigger", EXIT_TILE);
-						else
-							modify_navigation($currentTile, $targetTile, INTERACT_ONLY);
-						end;
-					end;
-					
-					if $tags contains "passable" and $passable == true then
-						modify_navigation($currentTile, $topTile, WALK_AND_INTERACT);
-						set_entity_script($topTile, "rmtPathTrigger", ENTER_TILE);
-						//set_entity_script($topTile, "rmtExitTileTrigger", EXIT_TILE);
-							
-					end;
-				
-					if $tags contains "moveable" then
-						$currentDirection = $directions[$loopIndex];
-						if $topTile.property[$currentDirection] == true then
-							modify_navigation($currentTile, $targetTile, WALK_AND_INTERACT);
-							set_entity_script($targetTile, "rmtPathTrigger", ENTER_TILE);
-							$targetTile.property["hasMoveableBlock"] = true;
-						
-						end;
-				
+				if $topTile.direction == $oppositeDirection then
+					modify_navigation($currentTile, $topTile, WALK_AND_INTERACT);
+					set_entity_script($topTile, "rmtPathTrigger", ENTER_TILE);
+					//set_entity_script($topTile, "rmtExitTileTrigger", EXIT_TILE);
+				end;
+			else
+				if $tags contains "door" then
+					print("disdoor");
+					print($topTile.property["isLocked"]  + " and " + $topTile.property["isOpen"]); 
+					if $topTile.property["isOpen"] == true or $topTile.property["isLocked"] == false then
+						play_animation($topTile, "open");	
+						modify_navigation($currentTile, $targetTile, WALK_AND_INTERACT);
+						set_entity_script($targetTile, "rmtPathTrigger", ENTER_TILE);
+						print("whyyyyyyy?");
+						//set_entity_script($targetTile, "rmtExitTileTrigger", EXIT_TILE);
+					else
+						modify_navigation($currentTile, $targetTile, INTERACT_ONLY);
 					end;
 				end;
+				
+				if $tags contains "passable" and $passable == true then
+					modify_navigation($currentTile, $topTile, WALK_AND_INTERACT);
+					set_entity_script($topTile, "rmtPathTrigger", ENTER_TILE);
+					//set_entity_script($topTile, "rmtExitTileTrigger", EXIT_TILE);
+						
+				end;
+			
+				if $tags contains "moveable" then
+					$currentDirection = $directions[$loopIndex];
+					if $topTile.property[$currentDirection] == true then
+						modify_navigation($currentTile, $targetTile, WALK_AND_INTERACT);
+						set_entity_script($targetTile, "rmtPathTrigger", ENTER_TILE);
+						$targetTile.property["hasMoveableBlock"] = true;
+					
+					end;
+			
+				end;
 			end;
+		
 		end;
 		$loopIndex += 1;
 	end;
